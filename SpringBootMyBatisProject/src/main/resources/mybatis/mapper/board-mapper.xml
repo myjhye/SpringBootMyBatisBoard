@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sist.board.mapper.BoardMapper">
+  
+  <select id="boardListData" resultType="com.sist.board.vo.BoardVO" parameterType="hashmap">
+    SELECT no, subject, name, DATE_FORMAT(regdate,'%Y-%m-%d') as dbday, hit
+    FROM board ORDER BY no DESC
+    LIMIT #{start},10 <!-- LIMIT => 0부터 시작  시작 위치, 개수-->
+  </select>
+  
+  <select id="boardTotalPage" resultType="int">
+    SELECT COUNT(*) FROM board
+  </select>
+  
+  <insert id="boardInsert" parameterType="com.sist.board.vo.BoardVO">
+  	INSERT INTO board(name, subject, content, pwd) VALUES(#{name}, #{subject}, #{content}, #{pwd})
+  </insert>
+  
+  <!-- 상세보기 -->
+  <update id="hitIncrement" parameterType="int">
+  	UPDATE board SET
+  	hit = hit+1
+  	WHERE no=#{no}
+  </update>
+  
+  <select id="boardDetailData" resultType="com.sist.board.vo.BoardVO" parameterType="int">
+  	SELECT no, name, subject, content, DATE_FORMAT(regdate, '%Y-%m-%d') as dbday, hit
+  	FROM board
+  	WHERE no=#{no}
+  </select>
+  
+  
+  <!-- 수정하기 -->
+  <!-- 비밀번호 가져오기 -->
+  <select id="boardGetPassword" resultType="string" parameterType="int">
+  	SELECT pwd 
+  	FROM board
+  	WHERE no=#{no}
+  </select>
+  
+  <update id="boardUpdate" parameterType="com.sist.board.vo.BoardVO">
+  	UPDATE board SET
+  	name=#{name},
+  	subject=#{subject},
+  	content=#{content}
+  	WHERE no=#{no}
+  </update>
+  
+  <delete id="boardDelete" parameterType="int">
+  	DELETE FROM board WHERE no=#{no}
+  </delete>
+  
+</mapper>
